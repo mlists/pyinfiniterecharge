@@ -16,8 +16,8 @@ class Shooter:
     indexer: Indexer
 
     ranges = (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)  # TODO add more data points
-    centre_lookup = (28, 30, 42, 48, 55, 64, 68, 70, 75, 80, 87, 95)
-    outer_lookup = (65, 53, 40, 36, 28, 22, 20, 20, 19, 18, 18, 17)
+    centre_lookup = (28, 30, 42, 48, 55, 64, 68, 69, 75, 80, 87, 95)
+    outer_lookup = (65, 53, 40, 36, 28, 22, 20, 19, 19, 18, 18, 17)
 
     outer_target = tunable(0)
     centre_target = tunable(0)

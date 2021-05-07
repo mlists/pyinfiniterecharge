@@ -75,9 +75,6 @@ class ShootMoveShootBase(AutonomousStateMachine):
 
     @state(first=True)
     def shoot(self, initial_call, state_tm) -> None:
-        """
-        Shoot all balls that we currently have
-        """
         if initial_call:
             if self.trajectory_num == 0:
                 self.shooter.set_range(3)
@@ -124,8 +121,6 @@ class ShootMoveShootBase(AutonomousStateMachine):
         Has the robot collected all the balls for the current trajectory?
         """
         ball_target = self.expected_balls[self.trajectory_num]
-        if ball_target == 0:
-            return False
         if self.indexer.balls_loaded() >= ball_target:
             return True
         else:
@@ -138,6 +133,7 @@ class ShootMoveShootBase(AutonomousStateMachine):
 
 class test(ShootMoveShootBase):
     MODE_NAME = "Test"
+    DISABLED = True
 
     def setup(self):
         self.start_poses = [to_pose(0, 0, math.pi)]
@@ -153,14 +149,18 @@ class test(ShootMoveShootBase):
 
 
 class DefaultAuto(ShootMoveShootBase):
-    MODE_NAME = "DefaultAuto"
+    MODE_NAME = "Default Auto"
     DEFAULT = True
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.balls_to_fire = 0
 
     def setup(self):
         self.start_poses = [to_pose(-3.459, -1.7, math.pi)]
-        self.end_poses = [to_pose(-5.459, -1.7, math.pi)]
+        self.end_poses = [to_pose(-4.459, -1.7, math.pi)]
         self.waypoints = [[]]
-        self.expected_balls = [0]
+        self.expected_balls = [3]
         self.reversed = [False]
         self.trajectory_config = trajectory.TrajectoryConfig(
             maxVelocity=2.5, maxAcceleration=1
@@ -169,14 +169,32 @@ class DefaultAuto(ShootMoveShootBase):
         super().setup()
 
 
-class Pickup3(ShootMoveShootBase):
-    MODE_NAME = "Pickup3"
+class TrenchPickup3(ShootMoveShootBase):
+    MODE_NAME = "Trench Pickup 3"
 
     def setup(self):
         self.start_poses = [to_pose(-3.459, -1.7, math.pi)]
         self.end_poses = [to_pose(-8.163, -1.7, math.pi)]
         self.waypoints = [
             [geometry.Translation2d(-7.077, -1.7), geometry.Translation2d(-7.992, -1.7)]
+        ]
+        self.expected_balls = [3]
+        self.reversed = [False]
+        self.trajectory_config = trajectory.TrajectoryConfig(
+            maxVelocity=2.5, maxAcceleration=1
+        )
+        self.trajectory_max = 1
+        super().setup()
+
+
+class MiddlePickup2(ShootMoveShootBase):
+    MODE_NAME = "Middle Pickup 2"
+
+    def setup(self):
+        self.start_poses = [to_pose(-3.458, 0, math.pi)]
+        self.end_poses = [to_pose(-6.868, 1.642, -math.pi/2-1.9)]
+        self.waypoints = [
+            [geometry.Translation2d(-5.758, 0)]
         ]
         self.expected_balls = [3]
         self.reversed = [False]

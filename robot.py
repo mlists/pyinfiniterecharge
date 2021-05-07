@@ -136,6 +136,8 @@ class MyRobot(magicbot.MagicRobot):
             else:
                 self.indexer.enable_intaking()
                 self.indexer.lower_intake()
+        if joystick.getRawButtonPressed(4):
+            self.indexer.shimmying = not self.indexer.shimmying
 
         if gamepad.getAButton():
             # Dump all balls out the intake to try to clear jam, etc
@@ -155,7 +157,7 @@ class MyRobot(magicbot.MagicRobot):
     ) -> None:
         throttle = scale_value(joystick.getThrottle(), 1, -1, 0.1, 1)
         vx = 3 * throttle * rescale_js(-joystick.getY(), 0.1)
-        vz = 3 * throttle * rescale_js(-joystick.getTwist(), 0.1)
+        vz = 4.5 * throttle * rescale_js(-joystick.getTwist(), 0.1)
         self.chassis.drive(vx, vz)
         if joystick.getRawButtonPressed(3):
             self.chassis.reset_odometry(

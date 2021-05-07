@@ -95,7 +95,7 @@ class Turret:
     pidF = 0.2
     pidP = 1.0
     pidI = 0.005
-    pidIZone = 150
+    pidIZone = 200
     pidD = 4.0
     SLEW_CRUISE_VELOCITY = 4000
     SCAN_CRUISE_VELOCITY = 1500

@@ -37,6 +37,8 @@ class ShooterController(StateMachine):
 
     CAMERA_TO_LIDAR = 0.15
 
+    fire_timeout = 0.2 # only allows firing every 0.2 seconds
+
     def __init__(self) -> None:
         super().__init__()
         self.spin_command = False
@@ -45,10 +47,12 @@ class ShooterController(StateMachine):
         self.time_target_lost: Optional[float] = None
         self.disabled_flash: int = 0
         self.fired_count: int = 0
+        self.last_fired: float = 1
 
     def execute(self) -> None:
         super().execute()
         self.update_LED()
+        self.last_fired += 0.02
 
     def update_LED(self) -> None:
         # Flash if turret and shooter are disabled
@@ -152,7 +156,7 @@ class ShooterController(StateMachine):
                 self.turret.slew(target_data.angle)
             if self.turret.is_ready():
                 self.shooter.set_range(target_data.distance)
-            if self.ready_to_fire() and self.fire_command:
+            if self.ready_to_fire() and self.fire_command and self.last_fired > self.fire_timeout:
                 self.next_state("firing")
 
     @state(must_finish=True)

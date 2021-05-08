@@ -85,11 +85,22 @@ class ShootMoveShootBase(AutonomousStateMachine):
         self.shooter_controller.fire_input()
         if self.has_fired_balls():
             if self.trajectory_num >= len(self.paths):
-                self.done()
+                self.next_state("finishing")
             else:
                 self.indexer.lower_intake()
                 self.indexer.enable_intaking()
                 self.next_state("move")
+
+    @state
+    def finishing(self, initial_call, state_tm):
+        if initial_call:
+            self.chassis.drive(0, 0)
+        if self.indexer.balls_loaded() == 0:
+            # if a ball is stuck between sensors run indexing to move it
+            self.indexer.enable_intaking()
+
+        # continue firing
+        self.shooter_controller.fire_input()
 
     @state
     def move(self, initial_call, state_tm) -> None:
